@@ -23,10 +23,10 @@ public class BeerClientImpl implements BeerClient {
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(GET_BEER_PATH);
 
-        ResponseEntity<BeerDTOPageImpl> beerDTOResponse =
+        ResponseEntity<BeerDTOPageImpl> response =
                 restTemplate.getForEntity(uriComponentsBuilder.toUriString(), BeerDTOPageImpl.class);
 
-        System.out.println(beerDTOResponse.getBody());
+        System.out.println(response.getBody());
         return null;
     }
 }
