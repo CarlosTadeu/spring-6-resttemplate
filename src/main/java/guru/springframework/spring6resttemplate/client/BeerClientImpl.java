@@ -11,12 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class BeerClientImpl implements BeerClient {
 
     public static final String GET_BEER_PATH = "/api/v1/beer";
     private final RestTemplateBuilder restTemplateBuilder;
+
+    @Override
+    public BeerDTO getBeerById(UUID beerId) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        return restTemplate.getForObject(GET_BEER_PATH, BeerDTO.class, beerId);
+    }
 
     @Override
     public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory,
