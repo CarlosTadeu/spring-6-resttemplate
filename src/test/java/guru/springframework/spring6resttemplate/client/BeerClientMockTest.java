@@ -26,8 +26,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest
@@ -59,6 +58,18 @@ class BeerClientMockTest {
     }
 
     @Test
+    void testGetBeerById() throws JsonProcessingException {
+        BeerDTO beerDTO = getBeerDto();
+        String response = objectMapper.writeValueAsString(beerDTO);
+
+        server.expect(method(HttpMethod.GET))
+                .andExpect(requestToUriTemplate(URL + BeerClientImpl.GET_BEER_BY_ID_PATH, beerDTO.getId()))
+                .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+
+        BeerDTO dto = beerClient.getBeerById(beerDTO.getId());
+    }
+
+    @Test
     void testListBeers() throws JsonProcessingException {
         String payload = objectMapper.writeValueAsString(getPage());
 
@@ -67,7 +78,7 @@ class BeerClientMockTest {
                 .andRespond(withSuccess(payload, MediaType.APPLICATION_JSON));
 
         Page<BeerDTO> dtos = beerClient.listBeers();
-        assertThat(dtos.getContent().size()).isGreaterThan(0);
+        assertThat(dtos.getContent()).isNotEmpty();
     }
 
     BeerDTO getBeerDto() {
